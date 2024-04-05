@@ -8,6 +8,8 @@ const flash = require('connect-flash');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const bodyParser = require('body-parser');
+
 require('dotenv').config();
 
 app.use(express.urlencoded( { extended: true } ));
@@ -22,6 +24,9 @@ app.use(session({
 }))
 app.use(flash());
 app.use(fileUpload());
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('layout', 'layouts/main');
 app.set('view engine', 'ejs');

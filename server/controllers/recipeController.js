@@ -1,4 +1,5 @@
 require('../models/database');
+const { match } = require('assert');
 const Category = require('../models/Category');
 const Recipe = require('../models/Recipe');
 
@@ -186,6 +187,54 @@ exports.submitRecipePost = async(req, res) => {
     
 }
 
+
+/**
+ * POST /recipe-by-ingredient
+ * Search
+ */
+
+exports.getRecipeByIngredient = async(req, res) => {
+    const infoErrorsObj = req.flash('infoErrors');
+    const infoSubmitObj = req.flash('infoSubmit');
+    const recipes = await Recipe.find();
+    res.render('recipe-by-ingredient', { title: 'Search Recipe By Ingredient', infoErrorsObj, infoSubmitObj , recipes });
+}
+
+exports.postRecipeByIngredient = async(req, res) => {
+    try {
+        
+
+        const recipes = await Recipe.find();
+        const ingredients = recipes.map(recipe => recipe.ingredients).flat();
+        const userIngredients = req.body.ingredients.split(",").map(ingredient => ingredient.trim());
+        
+        
+
+        if (!ingredients) {
+            req.flash('infoErrors', 'No Ingredients Entered!');
+             return res.redirect('/');
+        }
+
+        const matchingRecipes = recipes.filter(recipe => 
+            recipe.ingredients.some(ingredient => 
+                userIngredients.some(userIngredient => 
+                    ingredient.toLowerCase().includes(userIngredient.toLowerCase())
+                )
+            )
+        );
+
+        console.log('User Ingredients:', userIngredients);
+        console.log('Matching Recipes:', matchingRecipes);
+
+        const infoErrorsObj = req.flash('infoErrors');
+        const infoSubmitObj = req.flash('infoSubmit');
+        res.render('recipe-by-ingredient', { title: 'Search Recipe By Ingredient', infoErrorsObj, infoSubmitObj, recipes: matchingRecipes});
+    } catch (error) {
+        res.status(500).send({message: error.message || "Error occurred while searching recipes" });
+    }
+
+}
+
 async function updateRecipe(){
 try {
     const res = await Recipe.updateOne({name: ""}, { name: ""});
@@ -203,73 +252,3 @@ async function deleteRecipe(){
         console.log("Error deleting recipe: " + error);
     }
 }
-
-// async function insertDummyCategoryData() {
-//     try {
-//         await Category.insertMany([
-//                    {
-//                     "name": "Thai",
-//                     "image": "thai-food.jpg"
-//                   },
-//                   {
-//                     "name": "American",
-//                     "image": "american-food.jpg"
-//                   }, 
-//                   {
-//                     "name": "Chinese",
-//                     "image": "chinese-food.jpg"
-//                   },
-//                   {
-//                     "name": "Mexican",
-//                     "image": "mexican-food.jpg"
-//                   }, 
-//                   {
-//                     "name": "Indian",
-//                     "image": "indian-food.jpg"
-//                   },
-//                   {
-//                     "name": "Spanish",
-//                     "image": "spanish-food.jpg"
-//                   }
-//                 ]);
-//     }
-//     catch (error) {
-//         console.log("Error inserting dummy data: " + error);
-//     }
-// }
-// insertDummyCategoryData();
-
-// async function insertDummyRecipeData() {
-//     try {
-//         await Recipe.insertMany([
-//                      {
-//                       "name": "Pad Thai",
-//                       "description": "Pad Thai is a stir-fried rice noodle dish commonly served as a street food and at most restaurants in Thailand as part of the country's cuisine. It is typically made with rice noodles, chicken, beef or tofu, peanuts, a scrambled egg, and bean sprouts, among other vegetables.",
-//                       "creator": "John Doe",
-//                       "ingredients": ["Rice noodles", "Beef", "Peanuts", "Egg", "Bean sprouts"],
-//                       "category": "Thai",
-//                       "image": "pad-thai.jpg"
-//                     },
-//                     {
-//                       "name": "Hamburger",
-//                       "description": "A hamburger is a sandwich consisting of one or more cooked patties of ground meat, usually beef, placed inside a sliced bread roll or bun. The patty may be pan fried, grilled, smoked or flame broiled.",
-//                       "creator": "John Doe",
-//                       "ingredients": ["Beef", "Bread roll", "Lettuce", "Tomato", "Onion"],
-//                       "category": "American",
-//                       "image": "hamburger.jpg"
-//                     }, 
-//                     {
-//                       "name": "Kung Pao Chicken",
-//                       "description": "Kung Pao chicken, also transcribed as Gong Bao or Kung Po, is a spicy, stir-fried Chinese dish made with cubes of chicken, peanuts, vegetables, and chili peppers. The classic dish in Sichuan cuisine originated in the Sichuan Province of south-western China and includes Sichuan peppercorns.",
-//                         "creator": "John Doe",
-//                         "ingredients": ["Chicken", "Peanuts", "Vegetables", "Chili peppers", "Sichuan peppercorns"],
-//                         "category": "Chinese",
-//                         "image": "kung-pao-chicken.jpg"
-//                     },
-//                 ]);
-//     }
-//     catch (error) {
-//         console.log("Error inserting dummy data: " + error);
-//     }
-// }
-// insertDummyRecipeData();

@@ -1,0 +1,44 @@
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">Search Recipe by Ingredient</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">Enter ingredients to find recipes that use it.</p> 
+    </div>   
+</div>
+
+<div class="row justify-content-center">
+    <% if(infoErrorsObj != '') { %>
+        <div class="col-8 alert alert-danger" role="alert">
+            <%= infoErrorsObj[0].message %>
+        </div>
+    <% } %>
+
+    <div class="col-8">
+        <form action="/recipe-by-ingredient" method="POST">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label for="ingredients" class="form-label">Ingredient(s) separated by a comma</label>
+                    <input type="text" name="ingredients" id="ingredients" class="form-control">
+                </div>
+
+                <div class="col-12">
+                    <button type="search" class="btn btn-primary">Find Recipe</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+    <% if(recipes && recipes.length > 0) { %>
+        <% recipes.forEach(function(recipe, index) { %>
+        <a href="/recipe/<%= recipe._id %>" class="col text-center category__link">
+            <div class="category__img category__img--large shadow">
+                <img src="uploads/<%= recipe._image %>" alt="<%= recipe._name %>" Loading="lazy">
+            </div>
+            <div class="pt-1"><%= recipe.name %></div>
+        </a>
+        <% }) %>
+    <% } else { %>
+            <p>No recipes found</p>
+    <% } %>
+</div>
