@@ -16,6 +16,7 @@ router.get('/submit-recipe', recipeController.submitRecipe);
 router.post('/submit-recipe', recipeController.submitRecipePost);
 router.get('/recipe-by-ingredient', recipeController.getRecipeByIngredient);
 router.post('/recipe-by-ingredient', recipeController.postRecipeByIngredient);
-
+router.get('/about', recipeController.about);
+router.get('/contact', recipeController.contact);
 
 module.exports = router;

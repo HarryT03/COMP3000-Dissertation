@@ -151,7 +151,8 @@ exports.submitRecipePost = async(req, res) => {
         let uploadPath;
         let newImageName;
 
-        if (req.files || Object.keys(req.files).length === 0) {
+        if (!req.files || Object.keys(req.files).length === 0) {
+            req.flash('infoErrors', { message: 'No files were uploaded'});
             console.log("No files were uploaded");
         }
         else {
@@ -165,6 +166,7 @@ exports.submitRecipePost = async(req, res) => {
             });
         }
 
+      
 
         const newRecipe = new Recipe({
             name: req.body.name,
@@ -180,7 +182,7 @@ exports.submitRecipePost = async(req, res) => {
         req.flash('infoSubmit', 'Your recipe has been submitted successfully!')
         res.redirect('/submit-recipe');
     } catch (error) {
-        req.flash('infoErrors', error.message || "Error occurred while submitting recipe");
+        req.flash('infoErrors', error);
         res.redirect('/submit-recipe');
     }
 
@@ -235,6 +237,16 @@ exports.postRecipeByIngredient = async(req, res) => {
 
 }
 
+exports.about = async(req, res) => {
+    res.render('about', { title: 'About' });
+}
+
+exports.contact = async(req, res) => {
+    res.render('contact', { title: 'Contact' });
+}
+
+
+
 async function updateRecipe(){
 try {
     const res = await Recipe.updateOne({name: ""}, { name: ""});
@@ -252,3 +264,6 @@ async function deleteRecipe(){
         console.log("Error deleting recipe: " + error);
     }
 }
+
+// updateRecipe();
+// deleteRecipe();
