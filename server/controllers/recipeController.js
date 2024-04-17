@@ -246,7 +246,7 @@ exports.contact = async(req, res) => {
 }
 
 
-
+// update a recipe - hardcoded to prevent accidental/unpermitted updating
 async function updateRecipe(){
 try {
     const res = await Recipe.updateOne({name: ""}, { name: ""});
@@ -257,6 +257,7 @@ try {
 }
 }
 
+// delete a recipe - hardcoded to prevent accidental/unpermitted deletion
 async function deleteRecipe(){
     try {
         await Recipe.deleteOne({name: ""});
@@ -266,4 +267,4 @@ async function deleteRecipe(){
 }
 
 // updateRecipe();
-// deleteRecipe();
+ // deleteRecipe();
