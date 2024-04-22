@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_ENV === 'test' ? 3001 : 3000;
+
 const passport = require('passport');
 require('./server/config/passport-config')(passport);
 
@@ -63,4 +64,4 @@ app.get('/user/logout', (req, res) => {
     });
   });
 
-app.listen(port, ()=> console.log(`Listening to port ${port}`));
+  app.listen(port, () => console.log(`Server running on port ${port}`));
